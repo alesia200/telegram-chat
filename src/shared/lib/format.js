@@ -1,3 +1,5 @@
+import { MS_PER_DAY } from "../config/constants.js";
+
 export function formatClock(timestamp) {
   return new Date(timestamp).toLocaleTimeString("ru-RU", {
     hour: "2-digit",
@@ -20,10 +22,11 @@ export function formatListTime(timestamp) {
 export function dayTitle(timestamp) {
   const date = new Date(timestamp);
   const today = new Date();
-  const startOf = (value) => new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime();
+  const startOf = (value) =>
+    new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime();
   const diff = startOf(today) - startOf(date);
   if (diff === 0) return "Сегодня";
-  if (diff === 86400000) return "Вчера";
+  if (diff === MS_PER_DAY) return "Вчера";
   const options = { day: "numeric", month: "long" };
   if (date.getFullYear() !== today.getFullYear()) options.year = "numeric";
   return date.toLocaleDateString("ru-RU", options);

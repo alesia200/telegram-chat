@@ -1,0 +1,89 @@
+.page {
+  height: 100%;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(51, 144, 236, 0.22), transparent 34%),
+    radial-gradient(circle at 88% 92%, rgba(80, 190, 230, 0.16), transparent 28%), #eef5fb;
+}
+
+.card {
+  width: min(440px, 100%);
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 32px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.brand p,
+.note {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.note {
+  font-size: 13px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field input {
+  width: 100%;
+  border: 1px solid #d7dce6;
+  border-radius: 12px;
+  min-height: 46px;
+  padding: 0 14px;
+  background: #fff;
+  outline: none;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.16);
+}
+
+.tokenField {
+  position: relative;
+  display: block;
+}
+
+.tokenField input {
+  padding-right: 96px;
+}
+
+.tokenField button {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  min-height: 34px;
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+}

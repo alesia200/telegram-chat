@@ -1,4 +1,30 @@
-import { formatPhone } from "./phone.js";
+import { formatPhone } from "../../../shared/lib/phone.js";
+
+/**
+ * @typedef {"sending" | "sent" | "delivered" | "error"} MessageStatus
+ */
+
+/**
+ * @typedef {Object} Message
+ * @property {string} id
+ * @property {string} text
+ * @property {boolean} outgoing
+ * @property {number} timestamp
+ * @property {MessageStatus} [status]
+ * @property {string} [error]
+ */
+
+/**
+ * @typedef {Object} Chat
+ * @property {string} id
+ * @property {string} phone
+ * @property {string} [username]
+ * @property {string} title
+ * @property {number} updatedAt
+ * @property {Message[]} messages
+ */
+
+const STATUS_RANK = { sending: 0, sent: 1, delivered: 2 };
 
 export function sortChats(chats) {
   return [...chats].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
@@ -24,6 +50,20 @@ export function createChat({ id, phone, title, username }) {
 export function ensureChat(chats, chat) {
   if (chats.some((item) => item.id === chat.id)) return chats;
   return sortChats([chat, ...chats]);
+}
+
+export function upsertOpenedChat(chats, chat) {
+  const found = chats.find((item) => item.id === chat.id);
+  if (!found) return ensureChat(chats, createChat(chat));
+  return chats.map((item) =>
+    item.id === chat.id
+      ? {
+          ...item,
+          phone: item.phone || chat.phone,
+          username: item.username || chat.username,
+        }
+      : item,
+  );
 }
 
 function resolveTitle(chat, event) {
@@ -108,7 +148,7 @@ export function applyMessageEvent(chats, event) {
         item.outgoing &&
         item.status === "sending" &&
         String(item.id).startsWith("local-") &&
-        item.text === event.text
+        item.text === event.text,
     );
     if (localIndex !== -1) {
       const messages = chat.messages.slice();
@@ -135,8 +175,6 @@ export function applyMessageEvent(chats, event) {
     messages: [...chat.messages, message],
   });
 }
-
-const STATUS_RANK = { sending: 0, sent: 1, delivered: 2 };
 
 function mergeStatus(current, next) {
   if (next === "error") return "error";
@@ -165,4 +203,25 @@ export function applyStatusEvent(chats, event) {
     return chatChanged ? { ...chat, messages } : chat;
   });
   return changed ? next : chats;
+}
+
+export function chatReducer(chats, action) {
+  switch (action.type) {
+    case "ensure":
+      return ensureChat(chats, action.chat);
+    case "upsert-opened":
+      return upsertOpenedChat(chats, action.chat);
+    case "add-local":
+      return addLocalMessage(chats, action.chatId, action.message);
+    case "patch":
+      return patchMessage(chats, action.chatId, action.messageId, action.patch);
+    case "remove":
+      return removeMessage(chats, action.chatId, action.messageId);
+    case "message-event":
+      return applyMessageEvent(chats, action.event);
+    case "status-event":
+      return applyStatusEvent(chats, action.event);
+    default:
+      return chats;
+  }
 }

@@ -1,8 +1,18 @@
-export const DEFAULT_API_URL = "https://4100.api.green-api.com";
-export const MESSAGE_LIMIT = 4096;
+import { RECEIVE_TIMEOUT_MAX_SECONDS, RECEIVE_TIMEOUT_MIN_SECONDS } from "../config/constants.js";
+import { isSecureApiUrl } from "./apiUrl.js";
+
+const INSECURE_URL_ERROR =
+  "apiUrl должен использовать HTTPS. Токен инстанса нельзя отправлять по обычному HTTP.";
+
+function assertSecureApiUrl(apiUrl) {
+  if (!isSecureApiUrl(apiUrl, import.meta.env.DEV)) {
+    throw new Error(INSECURE_URL_ERROR);
+  }
+}
 
 function endpoint(credentials, method, suffix = "") {
   const base = String(credentials.apiUrl || "").replace(/\/+$/, "");
+  assertSecureApiUrl(base);
   const id = encodeURIComponent(credentials.idInstance);
   const token = encodeURIComponent(credentials.apiTokenInstance);
   return `${base}/waInstance${id}/${method}/${token}${suffix}`;
@@ -65,17 +75,18 @@ function humanizeReason(reason) {
   return reason;
 }
 
-export function getStateInstance(credentials, signal) {
+export async function getStateInstance(credentials, signal) {
   return request(endpoint(credentials, "getStateInstance"), { signal });
 }
 
-export async function checkAccount(credentials, recipient) {
+export async function checkAccount(credentials, recipient, signal) {
   const body = recipient.username
     ? { username: recipient.username }
     : { phoneNumber: Number(recipient.phone) };
   const data = await request(endpoint(credentials, "checkAccount"), {
     method: "POST",
     body: JSON.stringify(body),
+    signal,
   });
   if (data && data.status === false) {
     throw new Error(humanizeReason(data.reason || data.data?.reason));
@@ -83,21 +94,25 @@ export async function checkAccount(credentials, recipient) {
   return data;
 }
 
-export function sendMessage(credentials, chatId, message) {
+export async function sendMessage(credentials, chatId, message, signal) {
   return request(endpoint(credentials, "sendMessage"), {
     method: "POST",
     body: JSON.stringify({ chatId, message }),
+    signal,
   });
 }
 
-export function receiveNotification(credentials, timeout = 20, signal) {
-  const seconds = Math.min(60, Math.max(5, timeout));
+export async function receiveNotification(credentials, timeout, signal) {
+  const seconds = Math.min(
+    RECEIVE_TIMEOUT_MAX_SECONDS,
+    Math.max(RECEIVE_TIMEOUT_MIN_SECONDS, timeout),
+  );
   return request(endpoint(credentials, "receiveNotification", `?receiveTimeout=${seconds}`), {
     signal,
   });
 }
 
-export function deleteNotification(credentials, receiptId, signal) {
+export async function deleteNotification(credentials, receiptId, signal) {
   return request(endpoint(credentials, "deleteNotification", `/${encodeURIComponent(receiptId)}`), {
     method: "DELETE",
     signal,

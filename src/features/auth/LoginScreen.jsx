@@ -1,23 +1,25 @@
 import { useState } from "react";
-import { DEFAULT_API_URL } from "../api.js";
-import { Logo } from "./Icons.jsx";
+import { DEFAULT_API_URL } from "../../shared/config/constants.js";
+import buttons from "../../shared/ui/buttons.module.css";
+import Logo from "../../shared/ui/Logo.jsx";
+import styles from "./LoginScreen.module.css";
 
-export default function LoginScreen({ onSubmit, pending, error }) {
+const LoginScreen = ({ onSubmit, pending, error }) => {
   const [apiUrl, setApiUrl] = useState(DEFAULT_API_URL);
   const [idInstance, setIdInstance] = useState("");
   const [apiTokenInstance, setApiTokenInstance] = useState("");
   const [showToken, setShowToken] = useState(false);
 
-  function handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();
     if (pending) return;
     onSubmit({ apiUrl, idInstance, apiTokenInstance });
-  }
+  };
 
   return (
-    <div className="login-page">
-      <form className="login-card" onSubmit={handleSubmit}>
-        <div className="login-brand">
+    <div className={styles.page}>
+      <form className={styles.card} onSubmit={handleSubmit}>
+        <div className={styles.brand}>
           <Logo size={56} />
           <div>
             <h1>Telegram</h1>
@@ -25,9 +27,10 @@ export default function LoginScreen({ onSubmit, pending, error }) {
           </div>
         </div>
 
-        <label>
+        <label className={styles.field} htmlFor="api-url">
           <span>apiUrl</span>
           <input
+            id="api-url"
             name="apiUrl"
             value={apiUrl}
             onChange={(event) => setApiUrl(event.target.value)}
@@ -38,9 +41,10 @@ export default function LoginScreen({ onSubmit, pending, error }) {
           />
         </label>
 
-        <label>
+        <label className={styles.field} htmlFor="id-instance">
           <span>idInstance</span>
           <input
+            id="id-instance"
             name="idInstance"
             value={idInstance}
             onChange={(event) => setIdInstance(event.target.value)}
@@ -51,10 +55,11 @@ export default function LoginScreen({ onSubmit, pending, error }) {
           />
         </label>
 
-        <label>
+        <label className={styles.field} htmlFor="api-token">
           <span>apiTokenInstance</span>
-          <span className="token-field">
+          <span className={styles.tokenField}>
             <input
+              id="api-token"
               name="apiTokenInstance"
               type={showToken ? "text" : "password"}
               value={apiTokenInstance}
@@ -63,25 +68,32 @@ export default function LoginScreen({ onSubmit, pending, error }) {
               spellCheck="false"
               required
             />
-            <button type="button" className="ghost" onClick={() => setShowToken((value) => !value)}>
+            <button
+              type="button"
+              className={buttons.ghost}
+              onClick={() => setShowToken((value) => !value)}
+            >
               {showToken ? "Скрыть" : "Показать"}
             </button>
           </span>
         </label>
 
         {error && (
-          <p className="form-error" role="alert">
+          <p className={styles.error} role="alert">
             {error}
           </p>
         )}
 
-        <button className="primary" type="submit" disabled={pending}>
+        <button className={buttons.primary} type="submit" disabled={pending}>
           {pending ? "Проверка инстанса..." : "Войти"}
         </button>
-        <p className="login-note">
+        <p className={styles.note}>
           Данные инстанса берутся в личном кабинете GREEN-API и сохраняются только в этом браузере.
+          Токен доступен скриптам этой страницы: для production его нужно хранить на сервере.
         </p>
       </form>
     </div>
   );
-}
+};
+
+export default LoginScreen;

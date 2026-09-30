@@ -1,0 +1,14 @@
+.list {
+  flex: 1;
+  overflow: auto;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 36px 20px;
+}
+
+.empty p {
+  margin: 0;
+}

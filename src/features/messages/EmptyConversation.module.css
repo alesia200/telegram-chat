@@ -1,0 +1,23 @@
+.empty {
+  margin: auto;
+  max-width: 360px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--muted);
+  text-align: center;
+}
+
+.empty h2 {
+  margin: 16px 0 0;
+  color: var(--text);
+}
+
+.empty p {
+  margin: 4px 0 0;
+}
+
+.empty button {
+  margin-top: 12px;
+}

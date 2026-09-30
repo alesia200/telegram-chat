@@ -1,0 +1,13 @@
+const Logo = ({ size = 48 }) => {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
+      <circle cx="24" cy="24" r="24" fill="#3390ec" />
+      <path
+        fill="#fff"
+        d="M11.2 23.4 35.6 13.4c1-.4 1.9.6 1.5 1.6L32 32.8c-.3 1-1.5 1.3-2.3.6l-6-4.8-3 2.8c-.7.6-1.8.2-1.9-.7l-.7-5-6.2-2.1c-1.1-.4-1.1-1.9.3-2.2Z"
+      />
+    </svg>
+  );
+};
+
+export default Logo;

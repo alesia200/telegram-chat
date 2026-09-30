@@ -1,0 +1,53 @@
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  background: #fff;
+}
+
+.alerts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 16px 0;
+  background: #fff;
+}
+
+.alert {
+  margin: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.warn {
+  color: var(--warn);
+  background: #fff7ed;
+}
+
+.bad {
+  color: var(--danger);
+  background: #fff1f0;
+}
+
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .chatOpen .sidebarSlot {
+    display: none;
+  }
+
+  .shell:not(.chatOpen) .conversationSlot {
+    display: none;
+  }
+}

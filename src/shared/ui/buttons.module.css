@@ -1,0 +1,35 @@
+.primary {
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  min-height: 44px;
+  padding: 0 18px;
+  font-weight: 600;
+}
+
+.primary:hover {
+  background: var(--accent-press);
+}
+
+.primary:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.ghost {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.ghost:hover {
+  background: var(--active);
+}
+
+.ghost:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

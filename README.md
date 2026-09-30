@@ -37,3 +37,23 @@ npm run preview
 4. Ответ из Telegram появится в том же чате. Входящие забираются методом `receiveNotification` и подтверждаются методом `deleteNotification`.
 
 Учётные данные и история чатов хранятся в `localStorage` браузера. Кнопка «Выйти» удаляет только данные входа, переписка этого инстанса остаётся на компьютере.
+
+`apiUrl` для GREEN-API должен быть `https://`. Обычный HTTP разрешён только для `localhost` в режиме разработки, чтобы токен инстанса не уходил по незащищённому каналу. Dev-сервер слушает `localhost`, а не всю локальную сеть.
+
+### Ограничение хранения токена
+
+Это учебный frontend-only клиент: `apiTokenInstance` лежит в `localStorage` и доступен любому скрипту страницы. При XSS токен можно прочитать. Для production нужен свой backend или BFF, который хранит токен на сервере и проксирует запросы в GREEN-API. Браузер в такой схеме токен не видит.
+
+## Проверки
+
+```bash
+npm run lint
+npm run format:check
+npm test
+npm run test:coverage
+npm run build
+```
+
+## Структура
+
+`App` только собирает экран. Вход, чаты и long polling живут в хуках `useAuth`, `useChats` и `useNotificationPolling`. Преобразования чатов остаются чистыми функциями в `features/chats/model/chatReducer.js`. Запросы GREEN-API собраны в `shared/api/greenApiClient.js`. Стили компонентов лежат в CSS Modules, глобально оставлены сброс и токены.
